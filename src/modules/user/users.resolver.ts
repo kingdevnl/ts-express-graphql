@@ -1,7 +1,7 @@
 import { Resolvers, User } from '../../graphql/types';
-import { PubSub } from 'graphql-subscriptions';
+import { pubsub } from '../../server';
+var crypto = require('crypto');
 
-const pubsub = new PubSub();
 
 const USERS: Array<User> = [
     {
@@ -17,24 +17,41 @@ const USERS: Array<User> = [
 ];
 
 export const UsersResolver: Resolvers = {
+    /**
+     * Resolves a field
+     */
+    User: {
+        md5: (parent, args, context) => {
+            return crypto.createHash('md5').update(parent.firstName+parent.lastName).digest("hex");
+        }
+    },
+    /**
+     * Resolves a query
+     */
     Query: {
         users: (parent, args, context) => {
-            console.log(context.req.headers.authorization);
+            // console.log(context.req.headers.authorization);
             return USERS;
         },
     },
+    /**
+     * Resolves a mutation
+     */
     Mutation: {
-        createUser: (parent, args, context) => {
+        createUser: async (parent, args, context) => {
             const user = {
                 id: USERS.length + 1,
                 ...args,
             };
             USERS.push(user);
 
-            pubsub.publish('USER_CREATED', user)
+            await pubsub.publish('USER_CREATED', user)
             return user.id;
         },
     },
+    /**
+     * Resolves a subscription
+     */
     Subscription: {
         userCreated: {
             subscribe: ()=> pubsub.asyncIterator(['USER_CREATED']),

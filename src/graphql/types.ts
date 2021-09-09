@@ -39,6 +39,7 @@ export type User = {
   firstName: Scalars['String'];
   id: Scalars['Int'];
   lastName: Scalars['String'];
+  md5?: Maybe<Scalars['String']>;
 };
 
 
@@ -146,6 +147,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  md5?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

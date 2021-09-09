@@ -6,10 +6,11 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
-
-import { UsersResolver } from './modules/user/users.resolver';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { execute, subscribe } from 'graphql';
+import { PubSub } from 'graphql-subscriptions';
+
+import { UsersResolver } from './modules/user/users.resolver';
 
 const baseSchema = loadSchemaSync(__dirname + '/**/*.graphql', {
     loaders: [new GraphQLFileLoader()],
@@ -19,6 +20,8 @@ export const schema = addResolversToSchema({
     schema: baseSchema,
     resolvers: merge(UsersResolver),
 });
+
+export const pubsub = new PubSub();
 
 async function start() {
     const app = express();

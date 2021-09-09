@@ -6,6 +6,7 @@ type User {
     id: Int!
     firstName: String!
     lastName: String!
+    md5: String
 }
 
 type Mutation {
